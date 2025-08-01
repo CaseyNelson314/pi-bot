@@ -1,0 +1,3 @@
+[submodule "core_daemon/thirdparty/uWebSockets"]
+	path = core_daemon/thirdparty/uWebSockets
+	url = https://github.com/uNetworking/uWebSockets.git
