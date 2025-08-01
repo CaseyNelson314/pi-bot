@@ -1,15 +1,14 @@
 #include <pigpio.h>
-
+#include <cassert>
 #include "gpio.hpp"
-
 
 
 gpio_enabler::gpio_enabler() noexcept
 {
-    assert(gpioInitialise() < 0, "pigpio 初期化失敗");
+    assert(not(gpioInitialise() < 0));
 }
 
-~gpio_enabler::gpio_enabler()
+gpio_enabler::~gpio_enabler()
 {
     gpioTerminate();
 }

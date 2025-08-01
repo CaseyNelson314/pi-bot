@@ -1,7 +1,7 @@
 #pragma once
 
 #include <cmath>
-
+#include <pigpio.h>
 #include "range.hpp"
 
 class servo
@@ -22,7 +22,7 @@ public:
 
     void move(float angle_rad)
     {
-        const float angle_to_pulse = (angle_rad / angle_limit_rad) * pulse_range.diff() + pulse_range.min;
-        gpioServo(pin, angle_rad * angle_to_pulse);
+        const float angle_pulse = (angle_rad / angle_limit_rad) * pulse_range.diff() + pulse_range.min;
+        gpioServo(pin, angle_pulse);
     }
 };

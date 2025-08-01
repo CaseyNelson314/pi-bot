@@ -4,9 +4,9 @@
 class gpio_enabler
 {
 public:
-    gpio_enabler();
+    gpio_enabler() noexcept;
     ~gpio_enabler();
-    
+
     gpio_enabler(const gpio_enabler&) = delete;
     gpio_enabler& operator=(const gpio_enabler&) = delete;
 };
