@@ -1,7 +1,6 @@
 #pragma once
 
 #include <cmath>
-#include <pigpio.h>
 #include "range.hpp"
 
 class servo
@@ -13,16 +12,7 @@ class servo
 public:
     servo(int pin,
           float angle_limit_rad = M_PI,
-          range<int>&& pulse_range_us = { 500, 2500 })
-        : pin{ pin }
-        , angle_limit_rad{ angle_limit_rad }
-        , pulse_range{ std::move(pulse_range_us) }
-    {
-    }
+          range<int>&& pulse_range_us = { 500, 2500 });
 
-    void move(float angle_rad)
-    {
-        const float angle_pulse = (angle_rad / angle_limit_rad) * pulse_range.diff() + pulse_range.min;
-        gpioServo(pin, angle_pulse);
-    }
+    void move(float angle_rad);
 };

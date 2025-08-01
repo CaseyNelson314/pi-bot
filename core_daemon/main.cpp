@@ -1,12 +1,14 @@
+// cmake -S . -B build && cmake --build build && sudo ./build/pibot
+
 #include <unistd.h>
 #include <iostream>
-#include <App.h>
-
 
 #include "gpio.hpp"
 #include "servo.hpp"
 #include "unit.hpp"
 #include "mecanum_wheel.hpp"
+#include "websocket.hpp"
+#include "json_parser.hpp"
 
 gpio_enabler enabler;
 
@@ -22,8 +24,13 @@ mecanum_wheel mecanum {{
 }};
 
 
-int main()
+int main(int argc, char** argv)
 {
+    if (argc != 2)
+        return 1;
+
+    const int websocket_server_port = std::atoi(argv[1]);
+
     //led.begin();
     //mecanum.begin();
 
@@ -48,31 +55,44 @@ int main()
 
 	// 	mecanum.move(0.5, 0.5, 0);
     // }
-    struct UserData
-    {};
 
-    uWS::App().ws<UserData>("/", {
-        .open = [](auto */*ws*/) {
+    websocket_server_start(websocket_server_config{
+        .server_port = websocket_server_port,
+        .on_server_start = [&websocket_server_port](bool is_start_success) {
+            if (is_start_success) {
+                std::cout << "[ OK ] WebSocket server activation: ws://raspberrypi.local:" << websocket_server_port << '\n';
+            } else {
+                std::cerr << "[ NG ] Port unavailable\n";
+            }
+        },
+        .on_open = []() {
             std::cout << "[ OK ] client connected\n";
         },
-        .message = [](auto *ws, std::string_view msg, uWS::OpCode opCode) {
-            try {
-                std::cout << "[ OK ] " << msg << std::endl;
-            } catch (...) {
-                std::cerr << "[ NG ] json invalid.\n";
-            }
-            ws->send(msg, opCode, false);
-        },
-        .close = [](auto */*ws*/, int /*code*/, std::string_view /*message*/) {
+        .on_close = []() {
+            mecanum.stop();
             std::cout << "[ OK ] client disconnected\n";
+        },
+        .on_message = [](std::string_view message) -> std::string {
+            if (const auto receive_data = parse_json(message))
+            {
+                std::cout
+                    << receive_data->wheel.x << " "
+                    << receive_data->wheel.y << " "
+                    << receive_data->wheel.turn << "\n";
+                std::cout
+                    << receive_data->arm.axis1 << " "
+                    << receive_data->arm.axis2 << " "
+                    << receive_data->arm.axis3 << " "
+                    << receive_data->arm.axis4 << "\n";
+                return "[ OK ]";
+            }
+            else
+            {
+                return "[ NG ] Invalid json";
+            }
         }
-    }).listen(9001, [](auto *token) {
-        if (token) {
-            std::cout << "[ OK ] WebSocket server activation: ws://raspberrypi.local:9001\n";
-        } else {
-            std::cerr << "[ NG ] Port unavailable\n";
-        }
-    }).run();
+    });
 
-    return 0;
+    // { "wheel": { "x":0, "y":1, "turn":1 }, "arm": { "axis1":0, "axis2":0, "axis3":1, "axis4":1 }  }
+    // { "wheel": { "x": 0.5, "y": 0.5, "turn": 0.1 }, "arm": { "axis1": 3.14, "axis2": 3.14, "axis3": 3.14, "axis4": 3.14 } }
 }
