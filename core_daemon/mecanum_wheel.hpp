@@ -55,4 +55,9 @@ public:
             wheels[i].move(powers[i] * 255);
         }
     }
+
+    void stop()
+    {
+        move(0, 0, 0);
+    }
 };
