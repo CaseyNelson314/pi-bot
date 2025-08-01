@@ -5,7 +5,7 @@
 #
 
 # CMake build output
-Build/
+build/
 
 # Doxygen
 docs/DoxygenDist/

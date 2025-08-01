@@ -3,20 +3,43 @@ project(pibot)
 
 set(CMAKE_CXX_STANDARD 17)
 
+include(FetchContent)
+
+FetchContent_Declare(
+  uSockets_content
+  GIT_REPOSITORY https://github.com/uNetworking/uSockets
+  GIT_TAG v0.8.8
+  GIT_SHALLOW ON
+  GIT_SUBMODULES ""
+)
+FetchContent_MakeAvailable(uSockets_content)
+file(GLOB_RECURSE SOURCES ${usockets_content_SOURCE_DIR}/src/*.c)
+add_library(uSockets ${SOURCES})
+target_include_directories(uSockets PUBLIC ${usockets_content_SOURCE_DIR}/src)
+target_compile_definitions(uSockets PRIVATE LIBUS_NO_SSL)
+
+FetchContent_Declare(
+  uWebSockets_content
+  GIT_REPOSITORY https://github.com/uNetworking/uWebSockets
+  GIT_TAG v20.74.0
+  GIT_SHALLOW ON
+  GIT_SUBMODULES ""
+)
+FetchContent_MakeAvailable(uWebSockets_content)
+find_package(ZLIB REQUIRED)
+add_library(uWebSockets INTERFACE)
+target_include_directories(uWebSockets INTERFACE ${uwebsockets_content_SOURCE_DIR}/src/)
+target_link_libraries(uWebSockets INTERFACE uSockets ${ZLIB_LIBRARIES})
+target_compile_options(uWebSockets INTERFACE -Wno-deprecated-declarations)
+
+find_library(PIGPIO_LIB pigpio REQUIRED)
+
 add_executable(pibot
-    main.cpp
-    gpio.cpp
+  main.cpp
+  gpio.cpp
 )
 
-# find_library(PIGPIO_LIB pigpio REQUIRED)
-# find_library(RT_LIB rt REQUIRED)
-
-# target_link_libraries(pibot
-#     ${PIGPIO_LIB}
-#     ${RT_LIB}
-# )
-
-# websocket のライブラリ紐づけ
-target_include_directories(pibot INTERFACE
-    ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/uWebSockets/src
+target_link_libraries(pibot
+  uWebSockets
+  ${PIGPIO_LIB}
 )
