@@ -48,11 +48,46 @@ Connected (press CTRL+C to quit)
 例として次のように指令値を入力します。y 方向に 0.5 の出力値で移動する指令値です。
 
 ```
-> { "wheel": { "x": 0, "y": 0.5, "turn": 0 }, "arm": { "axis1": 0, "axis2": 0, "axis3": 0, "axis4": 0 }  }
+> { "wheel": { "x": 0, "y": 0.5, "turn": 0 }, "arm": { "axis1": 0, "axis2": 0, "axis3": 0, "axis4": 0, "axis5": 0 }  }
 ```
 
 問題なくロボットへ送信できた場合、OK とレスポンスが返ります。
 
 ```sh
 < [ OK ]
+```
+
+## 一から構築する手順
+
+Raspberry Pi Zero 2 W に SSH で接続。ターミナルが使えればよいので、HDMI を接続して画面を出力させ、ターミナルを起動しても大丈夫です。
+
+```sh
+sudo apt update
+sudo apt upgrade
+```
+
+ツールチェーンをインストール
+
+```sh
+sudo apt install cmake
+```
+
+本プロジェクトをクローン
+
+```sh
+git clone https://github.com/CaseyNelson314/pi-bot.git
+cd ./pi-bot/core_daemon/
+```
+
+ビルド
+
+```sh
+cmake -S . -B build
+cmake --build build
+```
+
+実行
+
+```sh
+sudo ./build/pibot 9000
 ```
