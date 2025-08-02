@@ -3,14 +3,16 @@
 #include <cmath>
 #include "range.hpp"
 
+using pin_servo = int;
+
 class servo
 {
-    int pin;
+    pin_servo pin;
     float angle_limit_rad;
     range<int> pulse_range;
 
 public:
-    servo(int pin,
+    servo(pin_servo pin,
           float angle_limit_rad = M_PI,
           range<int>&& pulse_range_us = { 500, 2500 });
 

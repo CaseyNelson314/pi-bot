@@ -16,6 +16,7 @@ static void from_json(const json& j, json_schema::arm_t& self)
     j.at("axis2").get_to(self.axis2);
     j.at("axis3").get_to(self.axis3);
     j.at("axis4").get_to(self.axis4);
+    j.at("axis5").get_to(self.axis5);
 }
 
 static void from_json(const json& j, json_schema& self)

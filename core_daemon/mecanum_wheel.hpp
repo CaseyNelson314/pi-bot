@@ -52,6 +52,7 @@ public:
 
         for (int i = 0; i < 4; ++i)
         {
+            std::cout << i << " : " << powers[i] * 255 << std::endl;
             wheels[i].move(powers[i] * 255);
         }
     }

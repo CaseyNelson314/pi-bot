@@ -18,6 +18,7 @@ struct json_schema
         float axis2;
         float axis3;
         float axis4;
+        float axis5;
     } arm;
 };
 
