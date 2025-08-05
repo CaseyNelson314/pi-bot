@@ -3,6 +3,7 @@
 #include <cmath>
 #include <cstdint>
 #include "gpio.hpp"
+#include "type.hpp"
 
 
 class motor
@@ -10,13 +11,20 @@ class motor
     pin_output in1;
     pin_output in2;
     pin_pwm pwm;
+    direction dir;
 
 public:
-    motor(pin_output in1, pin_output in2, pin_pwm pwm)
+    motor(pin_output in1, pin_output in2, pin_pwm pwm, direction dir)
         : in1{ in1 }
         , in2{ in2 }
         , pwm{ pwm }
+        , dir{ dir }
     {
+    }
+
+    ~motor()
+    {
+        stop();
     }
 
     void begin()
@@ -24,21 +32,32 @@ public:
         in1.begin();
         in2.begin();
         pwm.begin();
+        stop();
     }
 
-    void move(int duty)
+    void move(int duty_ref)
     {
-        int absed_duty = std::abs(duty);
-        if (absed_duty > 255)
+        const int duty = duty_ref * direction_to_sign(dir);
+        if (std::abs(duty) > 255)
             return;
 
-        if (duty >= 0)
-            cw(absed_duty);
+        if (duty == 0)
+            stop();
+        else if (duty > 0)
+            cw(std::abs(duty));
         else
-            ccw(absed_duty);
+            ccw(std::abs(duty));
+    }
+
+    void stop()
+    {
+        in1.write(true);
+        in2.write(true);
+        pwm.write(0);
     }
 
 private:
+
     /// @brief 正転
     void cw(uint8_t duty)
     {

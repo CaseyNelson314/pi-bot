@@ -4,7 +4,7 @@
 #include <algorithm>
 
 #include "motor.hpp"
-#include "unit.hpp"
+#include "type.hpp"
 
 class mecanum_wheel
 {
@@ -14,6 +14,10 @@ public:
     mecanum_wheel(std::array<motor, 4>&& wheels)
         : wheels{ std::move(wheels) }
     {}
+
+    ~mecanum_wheel()
+    {
+    }
 
     void begin()
     {
@@ -59,6 +63,10 @@ public:
 
     void stop()
     {
-        move(0, 0, 0);
+        for (auto& wheel : wheels)
+        {
+            wheel.stop();
+        }
     }
+
 };

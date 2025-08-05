@@ -35,6 +35,11 @@ pin_pwm::pin_pwm(int pin)
 {
 }
 
+pin_pwm::~pin_pwm()    
+{
+    gpioSetMode(pin, PI_INPUT);  // 入力モードに戻す これをしないとHIGHが出力され続けた
+}
+
 void pin_pwm::begin()
 {
     gpioSetPWMfrequency(pin, 1000); // 1000Hz

@@ -29,6 +29,7 @@ class pin_pwm
 
 public:
     pin_pwm(int pin);
+    ~pin_pwm();
     void begin();
     void write(uint8_t angle);
 };
