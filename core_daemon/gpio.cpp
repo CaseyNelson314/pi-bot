@@ -2,17 +2,23 @@
 #include <cassert>
 #include "gpio.hpp"
 
-
 gpio_enabler::gpio_enabler() noexcept
 {
-    assert(not(gpioInitialise() < 0));
 }
 
 gpio_enabler::~gpio_enabler()
 {
-    gpioTerminate();
 }
 
+void gpio_enabler::enable()
+{
+    assert(not(gpioInitialise() < 0));
+}
+
+void gpio_enabler::disable()
+{
+	gpioTerminate();
+}
 
 pin_output::pin_output(int pin)
     : pin{ pin }
@@ -42,10 +48,10 @@ pin_pwm::~pin_pwm()
 
 void pin_pwm::begin()
 {
-    gpioSetPWMfrequency(pin, 1000); // 1000Hz
+    gpioSetPWMfrequency(pin, 100'000);
 }
 
 void pin_pwm::write(uint8_t angle)
 {
-    gpioPWM(pin, 128); // デューティ 50%（0〜255）
+    gpioPWM(pin, angle);
 }

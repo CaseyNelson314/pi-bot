@@ -1,20 +1,35 @@
 #include <unistd.h>
 #include <iostream>
+#include <signal.h>
 
 #include "gpio.hpp"
 #include "servo.hpp"
 #include "mecanum_wheel.hpp"
 #include "websocket.hpp"
 #include "json_parser.hpp"
+#include "motor_driver_enabler.hpp"
+#include "mdns.hpp"
 
+static gpio_enabler g_enabler;
+static motor_driver_enabler m_enabler{ pin_output{ 13 } };
+
+void signal_handler(int signal)
+{
+	m_enabler.disable();
+	g_enabler.disable();
+}
 
 int main(int argc, char** argv)
 {
+    signal(SIGINT, signal_handler);
+    signal(SIGTERM, signal_handler);
+
     if (argc != 2)
         return 1;
 
-    gpio_enabler enabler;
-    
+    g_enabler.enable();
+    m_enabler.enable();
+
     mecanum_wheel mecanum {{
         motor{ pin_output{ 12 }, pin_output{  1 }, pin_pwm{  7 }, direction::cw },
         motor{ pin_output{ 16 }, pin_output{ 21 }, pin_pwm{ 20 }, direction::cw },
@@ -27,15 +42,14 @@ int main(int argc, char** argv)
     servo axis3{ pin_servo{ 4 }, deg_to_rad(270), { 500, 2500 } };
     servo axis4{ pin_servo{ 5 }, deg_to_rad(270), { 500, 2500 } };
     servo axis5{ pin_servo{ 6 }, deg_to_rad(270), { 500, 2500 } };
-    
 
     const int websocket_server_port = std::atoi(argv[1]);
 
-    websocket_server_start(websocket_server_config{
+    websocket_server_start({
         .server_port = websocket_server_port,
         .on_server_start = [&websocket_server_port](bool is_start_success) {
             if (is_start_success) {
-                std::cout << "[ OK ] WebSocket server activation: ws://raspberrypi.local:" << websocket_server_port << '\n';
+                std::cout << "[ OK ] WebSocket server activation: ws://" << get_hostname() << ".local:" << websocket_server_port << '\n';
             } else {
                 std::cerr << "[ NG ] Port unavailable\n";
             }
