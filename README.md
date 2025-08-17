@@ -72,7 +72,7 @@ sudo apt install cmake
 本プロジェクトをクローン
 
 ```sh
-git clone https://github.com/CaseyNelson314/pi-bot.git
+git clone https://github.com/CaseyNelson314/pibot.git
 cd ./pibot/actuator_ctrl_server/
 ```
 
@@ -86,6 +86,7 @@ cmake --build build
 起動時実行されるように systemd に登録
 
 ```sh
+sudo cp ~/pibot/actuator_ctrl_server/actuator.service /etc/systemd/system/
 sudo systemctl start  actuator.service
 sudo systemctl enable actuator.service
 ```
