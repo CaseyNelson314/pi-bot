@@ -57,18 +57,15 @@ Connected (press CTRL+C to quit)
 < [ OK ]
 ```
 
-## 一から構築する手順
+## 構築手順
 
 Raspberry Pi Zero 2 W に SSH で接続。ターミナルが使えればよいので、HDMI を接続して画面を出力させ、ターミナルを起動しても大丈夫です。
-
-```sh
-sudo apt update
-sudo apt upgrade
-```
 
 ツールチェーンをインストール
 
 ```sh
+sudo apt update
+sudo apt upgrade
 sudo apt install cmake
 ```
 
@@ -76,7 +73,7 @@ sudo apt install cmake
 
 ```sh
 git clone https://github.com/CaseyNelson314/pi-bot.git
-cd ./pi-bot/core_daemon/
+cd ./pi-bot/actuator_ctrl_server/
 ```
 
 ビルド
@@ -86,7 +83,14 @@ cmake -S . -B build
 cmake --build build
 ```
 
-実行
+起動時実行されるように systemd に登録
+
+```sh
+sudo systemctl start  actuator.service
+sudo systemctl enable actuator.service
+```
+
+単体で実行する場合
 
 ```sh
 sudo ./build/pibot 9000
