@@ -1,0 +1,11 @@
+[Unit]
+Description=actuator ctrl web server
+After=network.target
+
+[Service]
+Type=simple
+ExecStart=/home/pi/pi-bot/core_daemon/build/pibot 9000
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target

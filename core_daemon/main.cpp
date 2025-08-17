@@ -1,6 +1,7 @@
 #include <unistd.h>
 #include <iostream>
 #include <signal.h>
+#include <string.h>
 
 #include "gpio.hpp"
 #include "servo.hpp"
@@ -13,17 +14,8 @@
 static gpio_enabler g_enabler;
 static motor_driver_enabler m_enabler{ pin_output{ 13 } };
 
-void signal_handler(int signal)
-{
-	m_enabler.disable();
-	g_enabler.disable();
-}
-
 int main(int argc, char** argv)
 {
-    signal(SIGINT, signal_handler);
-    signal(SIGTERM, signal_handler);
-
     if (argc != 2)
         return 1;
 
@@ -81,5 +73,4 @@ int main(int argc, char** argv)
             }
         }
     });
-
 }
