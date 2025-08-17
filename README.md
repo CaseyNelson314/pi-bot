@@ -73,7 +73,7 @@ sudo apt install cmake
 
 ```sh
 git clone https://github.com/CaseyNelson314/pi-bot.git
-cd ./pi-bot/actuator_ctrl_server/
+cd ./pibot/actuator_ctrl_server/
 ```
 
 ビルド
