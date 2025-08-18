@@ -6,7 +6,7 @@
 
 移動量、アームの角度等の指令値は、WebSocket を用いてロボットへ送信します。指令値を送信する PC は Raspberry Pi と同一の LAN に接続されている必要があります。
 
-接続の際には Raspberry Pi 上に起動された WebSocket サーバーの URL が必要で、サーバーの URL、ポートは次の通りです。
+WebSocket サーバーの URL、ポートは次の通りです。
 
 ```txt
 ws://raspberrypi.local:9000
@@ -31,30 +31,35 @@ ws://raspberrypi.local:9000
 }
 ```
 
-WebSocket クライアントアプリである wscat を用いて動作検証できます([wscat インストール先](https://github.com/websockets/wscat)) 。次のコマンドでサーバーに接続できます。
+簡易ウェブアプリを用いて動作検証できます。セキュリティーの関係でウェブアプリは公開されておらず、自前でウェブサーバーを立てる必要があります。以下コマンドは全て Windows 上で実行します。
+
+> ウェブサーバーの起動には bun が必要です。bun インストール方法
+> 
+> ```sh
+> powershell -c "irm bun.sh/install.ps1 | iex"
+> ```
+
+ウェブサーバー起動
 
 ```sh
-wscat -c ws://raspberrypi.local:9000  # URL:ポート番号
+cd ~/pibot/actuator_ctrl_server
+bun i
+bun run dev
 ```
 
-接続されると次のように送信値の入力を求められます。接続できない場合、Raspberry Pi 側に問題があります。
+起動すると次のように出力されるため、URL にブラウザでアクセスします。
 
-```sh
-Connected (press CTRL+C to quit)
->
+```txt
+  VITE v7.1.2  ready in 301 ms
+
+  ➜  Local:   http://localhost:XXXXX/
+  ➜  Network: use --host to expose
+  ➜  press h + enter to show help
 ```
 
-例として次のように指令値を入力します。y 方向に 0.5 の出力値で移動する指令値です。
+次のような操作画面が表示されます。
 
-```
-> { "wheel": { "x": 0, "y": 0.5, "turn": 0 }, "arm": { "axis1": 0, "axis2": 0, "axis3": 0, "axis4": 0, "axis5": 0 }  }
-```
-
-問題なくロボットへ送信できた場合、OK とレスポンスが返ります。
-
-```sh
-< [ OK ]
-```
+![Alt text](https://github.com/user-attachments/assets/1bff3622-15c1-4341-9044-2fdeaa45bc32)
 
 ### カメラ映像の受信
 
@@ -64,9 +69,15 @@ Connected (press CTRL+C to quit)
 ws://raspberrypi.local:8000/ws
 ```
 
-momo というソフトウエアを用いて配信しており、正常に配信出来ているか確認できるウェブページも同時に配信されています。次のURLから閲覧できます。Raspberry Pi と同一 LAN に存在する PC のブラウザで開いてください。momo の公式ページは[こちら](https://momo.shiguredo.jp/)です。
+momo というソフトウエアを用いて配信しており、正常に配信出来ているか確認できるウェブページも同時に配信されています。momo の公式ページは[こちら](https://momo.shiguredo.jp/)です。
+
+次のURLから閲覧できます。Raspberry Pi と同一 LAN に存在する PC のブラウザで開いてください。
 
 <http://raspberrypi.local:8080/html/test.html>
+
+次のような画面が表示されます。
+
+![Alt text](https://github.com/user-attachments/assets/f15ac71a-6ea5-4c73-83a7-ad9c1be68c64)
 
 ## 一から構築する手順
 
