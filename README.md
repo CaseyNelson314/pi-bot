@@ -16,6 +16,7 @@ ws://raspberrypi.local:9000
 
 ```json
 {
+    B
     "wheel": {
         "x": 0.0,    // X移動量 (-1~1)
         "y": 0.3,    // Y移動量 (-1~1)
@@ -114,8 +115,11 @@ sudo systemctl enable actuator.service
 
 ### 3. カメラ映像配信サーバー構築
 
+インストール
+
 ```sh
 cd ~/pibot/camera_streaming_server/
+./install.sh
 ```
 
 起動時に実行されるように systemd に登録
@@ -126,4 +130,4 @@ sudo systemctl start  camera_streaming_server.service
 sudo systemctl enable camera_streaming_server.service
 ```
 
-> 本プロジェクトには momo の実行バイナリを直接含んでいますが、最新バイナリは[リリースページ](https://github.com/shiguredo/momo/releases)から取得できます。
+> 本例ではインストールスクリプトでバイナリをダウンロードしますが、最新バイナリは[リリースページ](https://github.com/shiguredo/momo/releases)から取得できます。

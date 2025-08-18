@@ -4,6 +4,9 @@
 #    Copyright (c) 2022 udonrobo
 #
 
+# momo
+momo/
+
 # CMake build output
 build/
 
