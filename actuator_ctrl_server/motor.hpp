@@ -57,7 +57,6 @@ public:
     }
 
 private:
-
     /// @brief 正転
     void cw(uint8_t duty)
     {

@@ -11,16 +11,13 @@
 #include "motor_driver_enabler.hpp"
 #include "mdns.hpp"
 
-static gpio_enabler g_enabler;
-static motor_driver_enabler m_enabler{ pin_output{ 13 } };
-
 int main(int argc, char** argv)
 {
     if (argc != 2)
         return 1;
 
-    g_enabler.enable();
-    m_enabler.enable();
+    gpio_enabler g_enabler;
+    motor_driver_enabler m_enabler{ pin_output{ 13 } };
 
     mecanum_wheel mecanum {{
         motor{ pin_output{ 12 }, pin_output{  1 }, pin_pwm{  7 }, direction::cw },
@@ -39,9 +36,9 @@ int main(int argc, char** argv)
 
     websocket_server_start({
         .server_port = websocket_server_port,
-        .on_server_start = [&websocket_server_port](bool is_start_success) {
+        .on_server_start = [&](bool is_start_success) {
             if (is_start_success) {
-                std::cout << "[ OK ] WebSocket server activation: ws://" << get_hostname() << ".local:" << websocket_server_port << '\n';
+                std::cout << "[ OK ] WebSocket server activation: ws://" << get_self_url() << ":" << websocket_server_port << '\n';
             } else {
                 std::cerr << "[ NG ] Port unavailable\n";
             }

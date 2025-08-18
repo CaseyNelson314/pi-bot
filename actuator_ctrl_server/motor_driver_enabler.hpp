@@ -2,21 +2,17 @@
 
 class motor_driver_enabler
 {
-	pin_output stby;
+    pin_output stby;
+
 public:
-	motor_driver_enabler(pin_output&& stdy_pin)
-		: stby{ std::move(stdy_pin) }
-	{
-	}
+    motor_driver_enabler(pin_output&& stdy_pin)
+        : stby{ std::move(stdy_pin) }
+    {
+        stby.write(true);
+    }
 
-	void enable()
-	{
-		stby.write(true);
-	}
-
-	void disable()
-	{
-		stby.write(false);
-	}
+    ~motor_driver_enabler()
+    {
+        stby.write(false);
+    }
 };
-

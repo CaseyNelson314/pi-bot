@@ -6,8 +6,6 @@ class gpio_enabler
 public:
     gpio_enabler() noexcept;
     ~gpio_enabler();
-    void enable();
-    void disable();
     gpio_enabler(const gpio_enabler&) = delete;
     gpio_enabler& operator=(const gpio_enabler&) = delete;
 };
@@ -34,4 +32,3 @@ public:
     void begin();
     void write(uint8_t angle);
 };
-

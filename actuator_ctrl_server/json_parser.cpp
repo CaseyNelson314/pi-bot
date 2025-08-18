@@ -27,11 +27,13 @@ static void from_json(const json& j, json_schema& self)
 
 std::optional<json_schema> parse_json(std::string_view json_string)
 {
-    try {
+    try
+    {
         json_schema parsed = json::parse(json_string).get<json_schema>();
         return parsed;
     }
-    catch (...) {
+    catch (...)
+    {
         return std::nullopt;
     }
 }

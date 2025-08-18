@@ -13,7 +13,8 @@ class mecanum_wheel
 public:
     mecanum_wheel(std::array<motor, 4>&& wheels)
         : wheels{ std::move(wheels) }
-    {}
+    {
+    }
 
     ~mecanum_wheel()
     {
@@ -27,7 +28,7 @@ public:
         }
     }
 
-    /// @brief 
+    /// @brief
     /// @param x -1~1
     /// @param y -1~1
     /// @param turn -1~1
@@ -43,7 +44,7 @@ public:
         // 上で算出した出力値は {powerLimit} を超える場合があります。
         // 超えた場合、最大出力のモジュールの出力を {powerLimit} として他のモジュールの出力を圧縮します。
         auto max = std::abs(*std::max_element(powers.begin(), powers.end(), [](double lhs, double rhs)
-                                            { return std::abs(lhs) < std::abs(rhs); }));
+                                              { return std::abs(lhs) < std::abs(rhs); }));
 
         if (max > 1)
         {
@@ -68,5 +69,4 @@ public:
             wheel.stop();
         }
     }
-
 };
